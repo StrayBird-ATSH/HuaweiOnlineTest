@@ -1,32 +1,33 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
-public class Main {
+public class Test {
     public static void main(String[] args) {
-        String[] zeros = new String[]{"", "0000000", "000000", "00000", "0000", "000", "00", "0"};
         Scanner in = new Scanner(System.in);
-        int count = in.nextInt();
-        ArrayList<String> arrayList = new ArrayList<>();
-        for (int i = 0; i < count; i++)
-            arrayList.add(in.next());
-        for (int i = 0; i < count; i++) {
-            String string = arrayList.get(i);
-            if (string.length() > 8) {
-                arrayList.set(i, string.substring(0, 8));
-                arrayList.add(string.substring(8));
-                if (arrayList.get(arrayList.size() - 1).length() > 8) {
-                    while (arrayList.get(arrayList.size() - 1).length() > 8) {
-                        arrayList.set(arrayList.size() - 1, arrayList.get(arrayList.size() - 1).substring(0, 8));
-                        arrayList.add(arrayList.get(arrayList.size() - 1).substring(8));
-                    }
-                }
+        System.out.println(find(in.nextLine(),0,0).getKey());
+    }
+
+
+    static Map.Entry<String,Integer> find(String str, int index, int flag) {
+        StringBuilder res = new StringBuilder();
+        for (;index<str.length();index++){
+            if (Character.isAlphabetic(str.charAt(index)))
+                res.append(str.charAt(index));
+            else if (str.charAt(index) == ')'){
+                break;
+            }
+            else if (Character.isDigit(str.charAt(index))){
+                Map.Entry<String,Integer> t = null;
+                t = find(str,index+2, str.charAt(index)-48);
+                res.append(t.getKey());
+                index = t.getValue();
             }
         }
-        for (int i = 0; i < arrayList.size(); i++)
-            if (arrayList.get(i).length() < 8)
-                arrayList.set(i, arrayList.get(i) + zeros[arrayList.get(i).length()]);
-        arrayList.sort(null);
-        for (String value : arrayList)
-            System.out.print(value + " ");
+
+        String temp = res.toString();
+        while (flag>1){
+            res.append(temp);
+            flag--;
+        }
+        return new AbstractMap.SimpleEntry<>(res.toString(),index);
     }
 }
